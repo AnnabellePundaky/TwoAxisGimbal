@@ -16,12 +16,12 @@ Motors = Serial_Motor_Control()
 # Define some settings
 RESIZE_PROCESSING_WIDTH = 800
 RESIZE_DISPLAY_WIDTH = 1100
-ACCEPTABLE_X_ERROR = 75
-ACCEPTABLE_Y_ERROR = 60
+ACCEPTABLE_X_ERROR = 20
+ACCEPTABLE_Y_ERROR = 20
 
 # Define object to track with HSV colors
-color_lower = (0, 50, 50)
-color_upper = (10, 255, 255)
+color_lower = (0, 155, 50) #for this , Hue ranges from 0-179, and the other two range from 0 to 255. SO REMEBER TO SCALE UP YOUR VALUE.
+color_upper = (12, 239,255)
 
 # Initialize Picamera2
 picam = Picamera2()
@@ -36,11 +36,11 @@ while True:
     frame = imutils.resize(frame, width=RESIZE_PROCESSING_WIDTH)
     blurred = cv2.GaussianBlur(frame, (31, 31), 0)
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-   
+    
     mask = cv2.inRange(hsv, color_lower, color_upper)
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
-   
+    
     contours = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contours = imutils.grab_contours(contours)
 
@@ -52,11 +52,11 @@ while True:
 
         cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
         cv2.circle(frame, center, 5, (0, 0, 255), -1)
-       
+        
         # Calculate frame center
         frame_center = (RESIZE_PROCESSING_WIDTH // 2, frame.shape[0] // 2)
         delta_x, delta_y = np.subtract(center, frame_center)
-       
+        
         # Motor control based on centroid position
         if delta_x > ACCEPTABLE_X_ERROR: # Move left
             Motors.move_x_ccw()
