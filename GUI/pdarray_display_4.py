@@ -1,3 +1,5 @@
+# http://www.mikeburdis.com/wp/notes/plotting-serial-port-data-using-python-and-matplotlib/
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
