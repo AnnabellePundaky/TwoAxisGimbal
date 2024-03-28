@@ -33,15 +33,15 @@ void setup(void)
   Wire.begin();
 
   Serial.begin(115200);
-  Serial.println("VL53L1X Qwiic Test");
+  // Serial.println("VL53L1X Qwiic Test");
 
   if (distanceSensor.begin() != 0) //Begin returns 0 on a good init
   {
-    Serial.println("Sensor failed to begin. Please check wiring. Freezing...");
+    // Serial.println("Sensor failed to begin. Please check wiring. Freezing...");
     while (1)
       ;
   }
-  Serial.println("Sensor online!");
+  // Serial.println("Sensor online!");
 
   // CUSTOM
 
@@ -55,42 +55,39 @@ void setup(void)
 
 void loop(void)
 {
+  distanceSensor.setROI(8, 8, 163);
   distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
   while (!distanceSensor.checkForDataReady())
   {
-    delay(1);
+    // delay(1);
+    delayMicroseconds(1);
   }
-
-  distanceSensor.setROI(8, 8, 163);
   distance1 = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
 
+  distanceSensor.setROI(8, 8, 227);
   distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
   while (!distanceSensor.checkForDataReady())
   {
-    delay(1);
+    delayMicroseconds(1);
   }
-
-  distanceSensor.setROI(8, 8, 227);
   distance2 = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
 
+  distanceSensor.setROI(8, 8, 92);
   distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
   while (!distanceSensor.checkForDataReady())
   {
-    delay(1);
+    delayMicroseconds(1);
   }
-  
-  distanceSensor.setROI(8, 8, 92);
   distance3 = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
 
+  distanceSensor.setROI(8, 8, 28);
   distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
   while (!distanceSensor.checkForDataReady())
   {
-    delay(1);
+    delayMicroseconds(1);
   }
-  distanceSensor.setROI(8, 8, 28);
   distance4 = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
 
-  // Serial.print("Distance(mm): ");
   Serial.print(distance1);
   Serial.print(",");
   Serial.print(distance2);
@@ -98,12 +95,5 @@ void loop(void)
   Serial.print(distance3);
   Serial.print(",");
   Serial.print(distance4);
-
-  // float distanceInches = distance * 0.0393701;
-  // float distanceFeet = distanceInches / 12.0;
-
-  // Serial.print("\tDistance(ft): ");
-  // Serial.print(distanceFeet, 2);
-
   Serial.println();
 }
