@@ -10,10 +10,11 @@ import seaborn
 ser = serial.Serial()
 ser.port = '/dev/cu.usbserial-0001' #Arduino serial port
 ser.baudrate = 115200
+# ser.baudrate = 9600
 ser.timeout = 10 #specify timeout when using readline()
 ser.open()
 if ser.is_open==True:
-	print("\nAll right, serial port now open. Configuration:\n")
+	print("\nerial port now open. Configuration:\n")
 	print(ser, "\n") #print serial parameters
 
 # Create figure for plotting
@@ -26,6 +27,10 @@ ys3 = []
 ys4 = []
 # rs = [] #for theoretical probability
 
+matrix = np.array([[0, 0],
+                   [0, 0]])
+im = ax.imshow(matrix, vmin=0, vmax=3000)
+fig.colorbar(im)
 i = 0   # x-axis
 # This function is called periodically from FuncAnimation
 def animate(i, xs, ys1, ys2, ys3, ys4):
@@ -46,7 +51,6 @@ def animate(i, xs, ys1, ys2, ys3, ys4):
     ys2.append(int(line_as_list[1]))
     ys3.append(int(line_as_list[2]))
     ys4.append(int(line_as_list[3]))
-    # rs.append(0.5)
 
     # Limit x and y lists to 20 items
     xs = xs[-100:]
@@ -63,18 +67,17 @@ def animate(i, xs, ys1, ys2, ys3, ys4):
     # Draw x and y lists
     ax.clear()
     im = ax.imshow(matrix, vmin=0, vmax=3000)
-    # plt.colorbar()
     
     # ax.plot(xs, ys1, label="Cell 1")
     # Format plot
     plt.xticks(rotation=45, ha='right')
     # plt.subplots_adjust(bottom=0.30)
-    plt.title('This is how I roll...')
-    plt.ylabel('Relative frequency')
-    plt.legend()
+    plt.title('Photodiode Array')
+    # plt.ylabel('Relative frequency')
+    # plt.legend()
     # plt.axis([1, None, 0, 1.1]) #Use for arbitrary number of trials
     #plt.axis([1, 100, 0, 1.1]) #Use for 100 trial demo
 
 # Set up plot to call animate() function periodically
-ani = animation.FuncAnimation(fig, animate, fargs=(xs, ys1, ys2, ys3, ys4), interval=100)
+ani = animation.FuncAnimation(fig, animate, fargs=(xs, ys1, ys2, ys3, ys4), interval=5)
 plt.show()
