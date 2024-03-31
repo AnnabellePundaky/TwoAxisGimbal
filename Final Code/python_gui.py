@@ -18,6 +18,10 @@ BAUD_RATE = 9600
 TIMEOUT = 1
 # MAX_BUFFER_LEN = 255
 
+# Plot parameters
+UPPER_LIM_MODE_1 = 2000     # [mm]
+UPPER_LIM_MODE_2 = 3000     # [mm]
+
 # Initialize serial port
 ser = serial.Serial(PORT_NAME, BAUD_RATE, timeout=TIMEOUT)
 
@@ -80,7 +84,7 @@ while(1):
                 ser.write('$'.encode())		# Write mode 2
                 matrix = np.array([[0, 0],
                                    [0, 0]])
-                im = ax.imshow(matrix, vmin=0, vmax=3000)
+                im = ax.imshow(matrix, vmin=0, vmax=UPPER_LIM_MODE_2)
                 fig.colorbar(im)
             state = MAIN_STATE
         elif state == MAIN_STATE:
@@ -102,13 +106,13 @@ while(1):
                 plt.title('Distance vs. Time')
                 plt.xlabel('Time elapsed [s]')
                 plt.ylabel('Distance [mm]')
-                plt.ylim((0, 2000))
-
+                plt.ylim((0, UPPER_LIM_MODE_1))
+                plt.grid(alpha=0.25)
                 # For animation
                 plt.pause(0.05)
             elif user_mode == 2:
                 line_as_list = string.split(',')
-                im = ax.imshow(matrix, vmin=0, vmax=3000)
+                im = ax.imshow(matrix, vmin=0, vmax=UPPER_LIM_MODE_2)
 
                 ys1 = int(line_as_list[0])
                 ys2 = int(line_as_list[1])
@@ -119,7 +123,7 @@ while(1):
                                     [ys3, ys4] ])
                 
                 ax.clear()
-                im = ax.imshow(matrix, vmin=0, vmax=3000)
+                im = ax.imshow(matrix, vmin=0, vmax=UPPER_LIM_MODE_2)
 
                 # Plot settings
                 plt.title('Photodiode Array')
