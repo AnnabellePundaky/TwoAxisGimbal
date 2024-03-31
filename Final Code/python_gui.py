@@ -127,6 +127,7 @@ while(1):
 
                 # Plot settings
                 plt.title('Photodiode Array')
+                plt.axis('off')
 
                 # For animation
                 plt.pause(0.05)
