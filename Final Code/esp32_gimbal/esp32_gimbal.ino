@@ -41,7 +41,10 @@ int distance;
 
 // Timing variables
 unsigned long prev_time = 0;
-unsigned long curr_time;
+unsigned long curr_ms;
+int ms;
+int seconds;
+int minutes;
 
 
 void setup() {
@@ -56,7 +59,7 @@ void setup() {
     while (1)
       ;
   }
-  Serial.println("Sensor online!");
+  // Serial.println("Sensor online!");
   distanceSensor.setDistanceModeLong();
 
   // Initialize motor pins as outputs
@@ -109,10 +112,10 @@ void loop() {
           //   Serial.println("Unknown Command");
           // }
         }
-        
-        curr_time = millis();
-        if (curr_time - prev_time >= TOF_INTERVAL) {
-          prev_time = curr_time;
+
+        curr_ms = millis();
+        if (curr_ms - prev_time >= TOF_INTERVAL) {
+          prev_time = curr_ms;
           distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
           while (!distanceSensor.checkForDataReady()) {
             delayMicroseconds(1);
@@ -120,6 +123,14 @@ void loop() {
           distance = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
           // distanceSensor.clearInterrupt();
           // distanceSensor.stopRanging();
+
+          ms = (int) (curr_ms % 1000);
+          seconds = (int) (curr_ms / 1000.0);
+
+          Serial.print(seconds);
+          Serial.print(",");
+          Serial.print(ms);
+          Serial.print(",");
           Serial.print(distance);
           Serial.println();
         }
