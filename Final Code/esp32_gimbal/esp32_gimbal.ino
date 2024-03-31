@@ -70,12 +70,62 @@ void setup() {
 void loop() {
   if (Serial.available()) {
     char input = Serial.read();
+
     if (input == '#') {
       while (true) {
-        Serial.println("Mode 1: Sensor data 1");
-        delay(1000);
+        if (Serial2.available()) {
+          rpi_in_num = get_rpi_serial_input_as_int();
+          // Serial.print("Received command:  ");
+          // Serial.print(in_num);
+          if (rpi_in_num == CW_X_FLAG) {   // CW and CCW are reversed but tracks properly.
+            // Select motor and direction based on command
+            bool direction = 0;
+            digitalWrite(DIR_X_PIN, direction);
+            moveMotor(STEP_X_PIN, NUM_STEPS_PER_REQ);
+            // Serial.println("Move Horizontal-axis CW");
+          }
+          else if( rpi_in_num == CCW_X_FLAG ) {
+            // Select motor and direction based on command
+            bool direction = 1;
+            digitalWrite(DIR_X_PIN, direction);
+            moveMotor(STEP_X_PIN, NUM_STEPS_PER_REQ);
+            // Serial.println("Move Horizontal-axis CCW");
+          }
+          else if (rpi_in_num == CW_Y_FLAG) {
+            // Select motor and direction based on command
+            bool direction = 0;
+            digitalWrite(DIR_Y_PIN, direction);
+            moveMotor(STEP_Y_PIN, NUM_STEPS_PER_REQ);
+            //  Serial.println("Move Vertical-axis CW");
+          }
+          else if (rpi_in_num == CCW_Y_FLAG) {
+            // Select motor and direction based on command
+            bool direction = 1;
+            digitalWrite(DIR_Y_PIN, direction);
+            moveMotor(STEP_Y_PIN, NUM_STEPS_PER_REQ);
+            //  Serial.println("Move Vertical-axis CCW");
+          }
+          // else {
+          //   Serial.println("Unknown Command");
+          // }
+        }
+        
+        curr_time = millis();
+        if (curr_time - prev_time >= TOF_INTERVAL) {
+          prev_time = curr_time;
+          distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
+          while (!distanceSensor.checkForDataReady()) {
+            delayMicroseconds(1);
+          }
+          distance = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
+          // distanceSensor.clearInterrupt();
+          // distanceSensor.stopRanging();
+          Serial.print(distance);
+          Serial.println();
+        }
       }
     }
+
     else if (input == '$') {
       while (true) {
         Serial.println("Mode 2: Sensor data 2");
@@ -83,59 +133,6 @@ void loop() {
       }
     }
   }
-
-  /*
-  if (Serial2.available()) {
-    rpi_in_num = get_rpi_serial_input_as_int();
-    // Serial.print("Received command:  ");
-    // Serial.print(in_num);
-    if(rpi_in_num == CW_X_FLAG) {   // CW and CCW are reversed but tracks properly.
-      // Select motor and direction based on command
-      bool direction = 0;
-      digitalWrite(DIR_X_PIN, direction);
-      moveMotor(STEP_X_PIN, NUM_STEPS_PER_REQ);
-      // Serial.println("Move Horizontal-axis CW");
-    }
-    else if( rpi_in_num == CCW_X_FLAG ) {
-      // Select motor and direction based on command
-      bool direction = 1;
-      digitalWrite(DIR_X_PIN, direction);
-      moveMotor(STEP_X_PIN, NUM_STEPS_PER_REQ);
-      // Serial.println("Move Horizontal-axis CCW");
-    }
-  else if (rpi_in_num == CW_Y_FLAG) {
-     // Select motor and direction based on command
-     bool direction = 0;
-     digitalWrite(DIR_Y_PIN, direction);
-     moveMotor(STEP_Y_PIN, NUM_STEPS_PER_REQ);
-    //  Serial.println("Move Vertical-axis CW");
-   }
-   else if (rpi_in_num == CCW_Y_FLAG) {
-     // Select motor and direction based on command
-     bool direction = 1;
-     digitalWrite(DIR_Y_PIN, direction);
-     moveMotor(STEP_Y_PIN, NUM_STEPS_PER_REQ);
-    //  Serial.println("Move Vertical-axis CCW");
-   }
-//    else {
-//      Serial.println("Unknown Command");
-//    }
-  }
-
-  curr_time = millis();
-  if (curr_time - prev_time >= TOF_INTERVAL) {
-    prev_time = curr_time;
-    distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
-    while (!distanceSensor.checkForDataReady()) {
-      delayMicroseconds(1);
-    }
-    distance = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
-    // distanceSensor.clearInterrupt();
-    // distanceSensor.stopRanging();
-    Serial.print(distance);
-    Serial.println();
-  }
-  */
 }
 
 

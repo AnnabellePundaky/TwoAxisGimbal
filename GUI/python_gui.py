@@ -53,21 +53,30 @@ def select_mode():
 	return mode
 
 while(1):
-	string = ser.readline().decode()
-	print(string, end="")	# print without newline
-	# User mode selection
-	if state == START_STATE:
-		time.sleep(0.5)
-		user_mode = select_mode()
-		if user_mode == 1:
-			ser.write('#'.encode())		# Write mode 1
-		if user_mode == 2:
-			ser.write('$'.encode())		# Write mode 2
-		state = MAIN_STATE
-	# Read lines
-	elif state == MAIN_STATE:		
+	try:
 		string = ser.readline().decode()
 		print(string, end="")	# print without newline
-		if "@" in string:
-			state = START_STATE
-			# continue
+		# User mode selection
+		if state == START_STATE:
+			time.sleep(0.5)
+			user_mode = select_mode()
+			if user_mode == 1:
+				ser.write('#'.encode())		# Write mode 1
+			if user_mode == 2:
+				ser.write('$'.encode())		# Write mode 2
+			state = MAIN_STATE
+		# Read lines
+		elif state == MAIN_STATE:		
+			string = ser.readline().decode()
+			print(string, end="")	# print without newline
+			if "@" in string:
+				state = START_STATE
+				# continue
+	except KeyboardInterrupt:
+		print()
+		print("Keyboard exit command detected. Stopping execution.")
+		exit()
+	except UnicodeDecodeError:
+		print()
+		print("Detected EN button press though serial decode. Stopping execution.")
+		exit()
