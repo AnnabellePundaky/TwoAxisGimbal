@@ -26,11 +26,12 @@ void loop() {
   curr_ms = millis();
   
   ms = (int) (curr_ms % 1000);
-  seconds = (int) (curr_ms / 1000.0) % 60;
-  minutes = (int) (curr_ms / 1000.0 / 60.0);
+  // seconds = (int) (curr_ms / 1000.0) % 60;
+  seconds = (int) (curr_ms / 1000.0);
+  // minutes = (int) (curr_ms / 1000.0 / 60.0);
 
-  Serial.print(minutes);
-  Serial.print(",");
+  // Serial.print(minutes);
+  // Serial.print(",");
 
   Serial.print(seconds);
   Serial.print(",");
