@@ -50,7 +50,7 @@ void loop() {
       moveMotor(STEP_X_PIN, NUM_STEPS_PER_REQ);
       Serial.println("Move Horizontal-axis CCW");
     }
-  else if (in_num == CW_Y_FLAG) {
+    else if (in_num == CW_Y_FLAG) {
      // Select motor and direction based on command
      bool direction = 1;
      digitalWrite(DIR_Y_PIN, direction);
