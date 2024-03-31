@@ -37,7 +37,8 @@ void moveMotor(int stepPin, int steps);
 
 // Distance sensor
 SFEVL53L1X distanceSensor;
-int distance;
+int distance;   // for Mode 1
+int distance1, distance2, distance3, distance4;   // For Mode 2
 
 // Timing variables
 unsigned long prev_time = 0;
@@ -59,7 +60,7 @@ void setup() {
     while (1)
       ;
   }
-  // Serial.println("Sensor online!");
+  Serial.println("Distance sensor online.");
   distanceSensor.setDistanceModeLong();
 
   // Initialize motor pins as outputs
@@ -139,8 +140,47 @@ void loop() {
 
     else if (input == '$') {
       while (true) {
-        Serial.println("Mode 2: Sensor data 2");
-        delay(1000);
+        distanceSensor.setROI(8, 8, 163);
+        distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
+        while (!distanceSensor.checkForDataReady())
+        {
+          // delay(1);
+          delayMicroseconds(1);
+        }
+        distance1 = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
+
+        distanceSensor.setROI(8, 8, 227);
+        distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
+        while (!distanceSensor.checkForDataReady())
+        {
+          delayMicroseconds(1);
+        }
+        distance2 = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
+
+        distanceSensor.setROI(8, 8, 92);
+        distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
+        while (!distanceSensor.checkForDataReady())
+        {
+          delayMicroseconds(1);
+        }
+        distance3 = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
+
+        distanceSensor.setROI(8, 8, 28);
+        distanceSensor.startOneshotRanging(); //Write configuration bytes to initiate measurement
+        while (!distanceSensor.checkForDataReady())
+        {
+          delayMicroseconds(1);
+        }
+        distance4 = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
+
+        Serial.print(distance1);
+        Serial.print(",");
+        Serial.print(distance2);
+        Serial.print(",");
+        Serial.print(distance3);
+        Serial.print(",");
+        Serial.print(distance4);
+        Serial.println();
       }
     }
   }
