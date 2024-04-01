@@ -20,13 +20,15 @@ ACCEPTABLE_X_ERROR = 20
 ACCEPTABLE_Y_ERROR = 20
 
 # Define object to track with HSV colors
-color_lower = (0, 155, 50) #for this , Hue ranges from 0-179, and the other two range from 0 to 255. SO REMEBER TO SCALE UP YOUR VALUE.
+color_lower = (0, 155, 50) #f changed from 50 to 75or this , Hue ranges from 0-179, and the other two range from 0 to 255. SO REMEBER TO SCALE UP YOUR VALUE.
 color_upper = (12, 239,255)
 
 # Initialize Picamera2
 picam = Picamera2()
 config = picam.create_preview_configuration()
 picam.configure(config)
+Y_PIXEL_OFFSET = -30;
+X_PIXEL_OFFSET = -63;
 picam.start()
 time.sleep(2)  # Allow camera warm-up
 
@@ -55,14 +57,16 @@ while True:
         
         # Calculate frame center
         frame_center = (RESIZE_PROCESSING_WIDTH // 2, frame.shape[0] // 2)
-        delta_x, delta_y = np.subtract(center, frame_center)
-        
+        adjusted_frame_center = (frame_center[0] - X_PIXEL_OFFSET, frame_center[1] - Y_PIXEL_OFFSET)
+        #delta_x = np.subtract(center, frame_center)
+        delta_x, delta_y = np.subtract(center, adjusted_frame_center)
+        #delta_x, delta_y = np.subtract(center, frame_center)
         # Motor control based on centroid position
         if delta_x > ACCEPTABLE_X_ERROR: # Move left
             Motors.move_x_ccw()
-        elif delta_x < -ACCEPTABLE_X_ERROR: # Move right
+        elif delta_x< -ACCEPTABLE_X_ERROR: # Move right
             Motors.move_x_cw()
-        if delta_y > ACCEPTABLE_Y_ERROR: # Move down
+        if delta_y> ACCEPTABLE_Y_ERROR: # Move down
             Motors.move_y_ccw()
         elif delta_y < -ACCEPTABLE_Y_ERROR: # Move up
             Motors.move_y_cw()
